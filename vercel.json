@@ -7,6 +7,10 @@
     {
       "source": "/wikioculta",
       "destination": "/games/wikioculta/index.html"
+    },
+    {
+      "source": "/crm",
+      "destination": "/admin/crm.html"
     }
   ]
 }
