@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Road to Statuette | Just Chilling</title>
+  <link rel="icon" type="image/png" href="/road-to-statuette-favicon.png">
+  <style>
+    html,body{margin:0;width:100%;height:100%;background:#0a0708;overflow:hidden}
+    iframe{display:block;border:0;width:100%;height:100%;background:#0a0708}
+  </style>
+</head>
+<body>
+  <iframe id="game" title="Road to Statuette"></iframe>
+  <script>
+    const frame = document.getElementById('game');
+    const params = new URLSearchParams(location.search);
+    const hasCampaign = params.has('utm_source') || params.has('utm_medium') || params.has('utm_campaign') ||
+      ['gclid','gbraid','wbraid','fbclid','ttclid','msclkid','twclid','li_fat_id'].some(k => params.has(k));
+    if (!hasCampaign && document.referrer) {
+      try {
+        const ref = new URL(document.referrer);
+        if (ref.origin !== location.origin) {
+          params.set('utm_source', ref.hostname);
+          params.set('utm_medium', 'referral');
+        }
+      } catch (e) {}
+    }
+    const query = params.toString();
+    frame.src = '/road_to_statuette_WIKIDATA_Pix.html' + (query ? '?' + query : '');
+    frame.addEventListener('load', () => {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      if (!doc.getElementById('share-score-loader')) {
+        const share = doc.createElement('script');
+        share.id = 'share-score-loader';
+        share.src = '/share-score-loader.js?v=5';
+        doc.body.appendChild(share);
+      }
+      if (!doc.getElementById('road-page-enhancements')) {
+        const enhancements = doc.createElement('script');
+        enhancements.id = 'road-page-enhancements';
+        enhancements.src = '/road-page-enhancements.js?v=1';
+        doc.body.appendChild(enhancements);
+      }
+    });
+  </script>
+</body>
+</html>

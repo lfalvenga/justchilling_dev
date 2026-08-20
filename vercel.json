@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/roadtostatuette",
+      "destination": "/games/roadtostatuette/index.html"
+    },
+    {
+      "source": "/wikioculta",
+      "destination": "/games/wikioculta/index.html"
+    }
+  ]
+}
