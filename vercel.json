@@ -10,7 +10,7 @@
     },
     {
       "source": "/crm",
-      "destination": "/admin/crm.html"
+      "destination": "/analytics/crm.html"
     }
   ]
 }
