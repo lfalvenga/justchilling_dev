@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login · CRM</title>
+<style>
+  :root{--bg:#0b0b10;--card:#15151d;--border:#26263a;--text:#f0f0f5;--muted:#8a8a9a;--accent:#d4af37;}
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:32px;width:100%;max-width:340px;}
+  h1{font-size:18px;margin:0 0 20px;font-weight:600;}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+  input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+    background:#0f0f16;color:var(--text);font-size:14px;margin-bottom:16px;}
+  input:focus{outline:none;border-color:var(--accent);}
+  button{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);
+    color:#111;font-weight:600;font-size:14px;cursor:pointer;}
+  button:disabled{opacity:.6;cursor:default;}
+  #erro{color:#ff6b6b;font-size:13px;margin-top:12px;display:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Acesso ao CRM</h1>
+  <form id="loginForm">
+    <label for="user">Usuário</label>
+    <input id="user" type="text" autocomplete="username" required>
+    <label for="pass">Senha</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <button type="submit" id="submitBtn">Entrar</button>
+  </form>
+  <div id="erro">Senha incorreta. Tenta de novo.</div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  var erro = document.getElementById('erro');
+  erro.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+  try {
+    var res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user: document.getElementById('user').value,
+        password: document.getElementById('pass').value
+      })
+    });
+    var data = await res.json();
+    if (res.ok && data.ok) {
+      window.location.href = '/crm/painel';
+    } else {
+      erro.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+    }
+  } catch (err) {
+    erro.textContent = 'Erro de conexão. Tenta de novo.';
+    erro.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+  }
+});
+</script>
+</body>
+</html>
