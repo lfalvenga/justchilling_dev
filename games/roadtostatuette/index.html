@@ -290,13 +290,22 @@
   .selo-jogadores .icone{width:12px;height:12px;flex:none;display:block}
   .selo-jogadores .icone.larga{width:15px}
 
-  /* ----- modal de como jogar / compartilhar: mesma moldura para os dois ----- */
-  #modal-ajuda,#modal-share{
+  /* ----- modal de como jogar / compartilhar / nome: mesma moldura ----- */
+  #modal-ajuda,#modal-share,#modal-nome{
     position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;
     background:rgba(6,4,5,.82);backdrop-filter:blur(4px);
     animation:aparece .22s ease-out;
   }
-  #modal-ajuda.oculto,#modal-share.oculto{display:none}
+  #modal-ajuda.oculto,#modal-share.oculto,#modal-nome.oculto{display:none}
+
+  #campo-nome-producao{
+    width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(212,175,55,.45);
+    border-radius:10px;padding:13px 14px;margin-top:4px;
+    font-family:"Playfair Display",Georgia,serif;font-size:19px;color:var(--giz,#f3e7c8);
+  }
+  #campo-nome-producao:focus{outline:none;border-color:var(--dourado);background:rgba(212,175,55,.08)}
+  #campo-nome-producao::placeholder{color:rgba(243,231,200,.32);font-style:italic;font-size:17px}
+  .acoes-nome{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:18px;flex-wrap:wrap}
   .btn-fechar-modal{
     position:absolute;right:13px;top:11px;width:32px;height:32px;padding:0;border-radius:50%;
     background:transparent;color:var(--apagado);border:1px solid rgba(255,255,255,.14);
@@ -876,16 +885,12 @@
     background:none;color:var(--apagado);font-size:13px;font-weight:500;padding:8px 12px;
     box-shadow:none;border:0;cursor:pointer;font-family:inherit;
   }
-  /* o :not(:disabled) é obrigatório aqui: sem ele a regra global
-     button:hover:not(:disabled) (0,2,1) vence a do botão de texto e devolve o
-     brilho dourado e o pulo de 2px, que viram uma mancha solta atrás do texto */
   .terciario:hover:not(:disabled){
     color:var(--texto);text-decoration:underline;text-underline-offset:3px;
     transform:none;box-shadow:none;
   }
   .tela-derrota .link-elenco{animation:sobeTexto .6s ease 1.7s both}
 
-  /* ===== "ver elenco": botão dourado que abre a claquete final ===== */
   .link-elenco{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:22px;
     background:rgba(212,175,55,.1);color:var(--dourado-claro);
@@ -895,9 +900,6 @@
   .link-elenco:hover{background:rgba(212,175,55,.2);border-color:var(--dourado);transform:translateY(-2px)}
   .link-elenco svg{width:14px;height:14px}
   .palco .link-elenco{animation:sobeTexto .6s ease 1.95s both}
-  /* o palco empilha as ações num flex com wrap: sem quebrar a linha aqui, o
-     "escolher outro modo" senta ao lado do "jogar de novo" e tira o botão
-     principal do centro */
   #btn-outro-modo-palco{flex-basis:100%;margin-top:0}
 
   /* ===== "ver elenco" abre como se fosse outra aba: página cheia que
@@ -912,8 +914,6 @@
   #tela-elenco.oculto{display:none}
   #tela-elenco.aberta{transform:translateY(0)}
   .cartao-elenco{width:min(480px,100%);text-align:center}
-  /* voltar mora na quina de cima à esquerda, como em qualquer tela empilhada:
-     centralizado ele lê como título, não como saída */
   .topo-elenco{text-align:left}
 
   /* .wrap é position:relative com z-index:2, então cria contexto de
@@ -925,7 +925,6 @@
     display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0 0 18px;
     color:var(--apagado);font-size:13px;font-weight:600;box-shadow:none;cursor:pointer;font-family:inherit;
   }
-  /* mesmo motivo do .terciario: precisa bater a especificidade da regra global */
   .btn-voltar-elenco:hover:not(:disabled){color:var(--dourado-claro);transform:none;box-shadow:none}
   .btn-voltar-elenco svg{width:14px;height:14px}
   .titulo-elenco{font-size:22px;color:var(--giz,#f3e7c8);margin-bottom:18px;font-family:'Playfair Display',Georgia,serif}
@@ -1246,6 +1245,18 @@
 </button>
 
 <!-- como jogar: abre ao entrar no modo pela primeira vez -->
+<div id="modal-nome" class="oculto" role="dialog" aria-modal="true" aria-labelledby="nome-titulo">
+  <div class="caixa-ajuda">
+    <h2 id="nome-titulo">Batize sua produção</h2>
+    <p class="sub">Seu elenco está fechado. Dê um nome ao filme antes de encarar o tapete vermelho: ele aparece na claquete e na imagem que você compartilha.</p>
+    <input id="campo-nome-producao" maxlength="28" placeholder="ex.: O Último Ato" autocomplete="off">
+    <div class="acoes-nome">
+      <button id="btn-salvar-nome">Salvar nome</button>
+      <button class="terciario" id="btn-pular-nome">Pular</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-ajuda" class="oculto" role="dialog" aria-modal="true" aria-labelledby="ajuda-titulo">
   <div class="caixa-ajuda">
     <span class="selo-jogadores" id="ajuda-jogadores"></span>
@@ -1944,7 +1955,7 @@ function renderMenu(){
 /* ---------- início de partida ---------- */
 function iniciarModo(id){
   modo = id;
-  time = {}; giroAtual = null; historico = [];
+  time = {}; giroAtual = null; historico = []; nomeFilmeJogador = '';
   rodada = 0; vitorias = 0; catsVencidas = 0; catsPerdidas = 0;
   revelando = false;
   geracaoDuelo++;
@@ -2338,7 +2349,7 @@ function escalar(catId){
   if (modo === 'gala'){
     setTimeout(fimDaJogada, 420);
   } else if (Object.keys(time).length === CATS.length){
-    setTimeout(() => comCortina(iniciarTorneio), 420);
+    setTimeout(pedirNomeProducao, 420);
   }
 }
 
@@ -2386,6 +2397,19 @@ function novoAdversarioSorteado(){
   historico.forEach(h => usados.add(h.filme));
   const pool = FILMES.filter(f => !usados.has(f));
   return sortear(pool.length ? pool : FILMES);
+}
+
+function pedirNomeProducao(){
+  const campo = $("#campo-nome-producao");
+  campo.value = nomeFilmeJogador;
+  $("#modal-nome").classList.remove("oculto");
+  setTimeout(() => campo.focus(), 60);
+}
+
+function fecharNomeProducao(salvar){
+  if (salvar) nomeFilmeJogador = $("#campo-nome-producao").value.trim();
+  $("#modal-nome").classList.add("oculto");
+  comCortina(iniciarTorneio);
 }
 
 function iniciarTorneio(){
@@ -2704,6 +2728,7 @@ function fecharTelaElenco(){
 
 /* ---------- imagem do elenco: desenhada à mão num canvas (sem libs externas),
    lendo as medidas reais da claquete que renderTime() acabou de montar ---------- */
+const TEXTO_COMPARTILHAR = 'Esse foi meu elenco no Road to Statuette, monte o seu e enfrente o tapete vermelho! https://justchilling.com.br/roadtostatuette';
 const CORES_FAIXA_IMG = { ouro: '#d4af37', prata: '#c7ccd1', lendario: '#e879f9', bronze: '#a2703f' };
 
 function arredondadoImg(ctx, x, y, w, h, r){
@@ -3026,7 +3051,7 @@ $('#btn-compartilhar-img').onclick = () => {
     const blob = await gerarImagemElenco();
     const arquivo = new File([blob], 'road-to-statuette-elenco.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [arquivo] })){
-      await navigator.share({ files: [arquivo], title: 'Road to Statuette', text: 'Meu elenco no Road to Statuette' });
+      await navigator.share({ files: [arquivo], title: 'Road to Statuette', text: TEXTO_COMPARTILHAR });
     } else {
       txt.textContent = 'Use Salvar neste aparelho';
     }
@@ -3087,6 +3112,11 @@ $('#btn-lado').onclick = () => {
   if (abriu) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 $('#btn-ajuda-ok').onclick = fecharAjuda;
+$('#btn-salvar-nome').onclick = () => fecharNomeProducao(true);
+$('#btn-pular-nome').onclick = () => fecharNomeProducao(false);
+$('#campo-nome-producao').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter'){ e.preventDefault(); fecharNomeProducao(true); }
+});
 $('#modal-ajuda').onclick = (e) => { if (e.target.id === 'modal-ajuda') fecharAjuda(); };
 $('#btn-compartilhar-torneio').onclick = abrirCompartilhamento;
 $('#btn-compartilhar-gala').onclick = abrirCompartilhamento;
