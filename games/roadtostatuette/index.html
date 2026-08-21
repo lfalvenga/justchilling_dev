@@ -1578,7 +1578,7 @@ const ROTULOS = Object.fromEntries(CATS.map(c => [c.id, c.label]));
 const RODADAS = 8;
 // destino do botão de apoio no rodapé — troque pelo seu link do pix.gg
 const LINK_APOIO = 'https://pixgg.com/ian.brito';
-const LINK_HUB = 'www.justchilling.com.br';
+const LINK_HUB = "/";
 
 const GIROS_EXTRAS = 3;   // rodadas de "não gostei" para o draft inteiro
 const PAUSA_DUELO = 900;  // ms entre a revelação de um embate e o próximo
@@ -3076,8 +3076,9 @@ const ANOS = FILMES.map(f => f.a);
 $('#rodape').textContent = 'Dados de ' + Math.min(...ANOS) + ' a ' + Math.max(...ANOS) + '.';
 $('#btn-apoio').href = LINK_APOIO;
 $('#btn-apoio-topo').href = LINK_APOIO;
-$('#btn-hub').href = LINK_HUB;
-// clique. Quando tiver a URL do hub, vira <a> ou ganha onclick de verdade.
+$("#btn-hub").onclick = () => {
+  window.location.href = LINK_HUB;
+};
 $('#btn-ajuda').onclick = () => abrirAjuda(modo);
 $('#btn-lado').onclick = () => {
   const c = $('#col-lado');
