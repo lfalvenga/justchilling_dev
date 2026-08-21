@@ -357,12 +357,18 @@
     get enabled() { return enabled(); }
   };
 
-  addEventListener('DOMContentLoaded', () => {
+  function init() {
     consentBanner();
     if (enabled()) {
       ensureIds();
       track('page_view', { title: document.title });
       track('session_start', { landing_path: location.pathname });
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
