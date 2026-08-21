@@ -920,7 +920,7 @@
      empilhamento e prende palco/derrota/elenco nesse nível, por baixo do
      #btn-hub (filho direto do body, z:40). Em vez de brigar com z-index,
      some com a cápsula do hub enquanto uma tela de resultado está aberta. */
-  body.com-overlay #btn-hub{display:none}
+  body.com-overlay #btn-hub,body.com-overlay #btn-voltar-tela{display:none}
   .btn-voltar-elenco{
     display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0 0 18px;
     color:var(--apagado);font-size:13px;font-weight:600;box-shadow:none;cursor:pointer;font-family:inherit;
@@ -959,7 +959,7 @@
   /* botão de apoio: preenchido e com brilho respirando, para não passar batido */
   /* cápsula "voltar ao hub": botão real (clicável, com hover, focável por
      teclado), fixa no canto — só falta a URL do hub para o clique navegar */
-  #btn-hub{
+  #btn-hub,#btn-voltar-tela{
     position:fixed;top:16px;left:16px;z-index:40;
     display:inline-flex;align-items:center;gap:7px;
     padding:9px 18px 9px 14px;border-radius:999px;
@@ -969,19 +969,19 @@
     box-shadow:0 6px 18px rgba(0,0,0,.35);
     user-select:none;
   }
-  #btn-hub:hover:not(:disabled){
+  #btn-hub:hover:not(:disabled),#btn-voltar-tela:hover:not(:disabled){
     background:rgba(212,175,55,.18);border-color:var(--dourado);
     box-shadow:0 8px 22px rgba(0,0,0,.4);
   }
-  #btn-hub:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
-  #btn-hub svg{width:15px;height:15px;flex:none}
+  #btn-hub:focus-visible,#btn-voltar-tela:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
+  #btn-hub svg,#btn-voltar-tela svg{width:15px;height:15px;flex:none}
   /* .oculto{display:none} é classe (especificidade menor que #id) e por
      isso não vencia o display:inline-flex acima — sem essa regra o toggle
      não escondia nada nas outras telas */
-  #btn-hub.oculto{display:none}
+  #btn-hub.oculto,#btn-voltar-tela.oculto{display:none}
   @media (max-width:700px){
-    #btn-hub{top:10px;left:10px;padding:7px 14px 7px 11px;font-size:11.5px;gap:5px}
-    #btn-hub svg{width:13px;height:13px}
+    #btn-hub,#btn-voltar-tela{top:10px;left:10px;padding:7px 14px 7px 11px;font-size:11.5px;gap:5px}
+    #btn-hub svg,#btn-voltar-tela svg{width:13px;height:13px}
   }
 
   .apoie{
@@ -1235,9 +1235,13 @@
 <div class="grao" aria-hidden="true"></div>
 <div id="transicao" aria-hidden="true"><div class="folha e"></div><div class="folha d"></div></div>
 
-<!-- volta ao hub: botão de verdade (clicável, focável por teclado), só que
-     ainda sem destino — falta a URL do hub para o clique fazer algo -->
-<button type="button" id="btn-hub" title="Ainda sem destino: falta a URL do hub">
+<button type="button" id="btn-voltar-tela" class="oculto">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span>Voltar</span>
+</button>
+<button type="button" id="btn-hub">
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
@@ -1317,7 +1321,7 @@
         <p class="sub" id="modo-sub"></p>
       </div>
       <span class="acoes-topo">
-        <button class="fantasma btn-ajuda" id="btn-ajuda" title="Como jogar" aria-label="Como jogar">?</button>
+        <button class="fantasma btn-ajuda" id="btn-ajuda" aria-label="Como jogar">?</button>
         <button class="fantasma pequeno" id="btn-menu">Trocar de modo</button>
       </span>
     </div>
@@ -1589,6 +1593,7 @@ const ROTULOS = Object.fromEntries(CATS.map(c => [c.id, c.label]));
 const RODADAS = 8;
 // destino do botão de apoio no rodapé — troque pelo seu link do pix.gg
 const LINK_APOIO = 'https://pixgg.com/ian.brito';
+// destino do botão de voltar ao hub
 const LINK_HUB = "/";
 
 const GIROS_EXTRAS = 3;   // rodadas de "não gostei" para o draft inteiro
@@ -1844,8 +1849,10 @@ const TELAS = ['#tela-inicio', '#tela-draft', '#tela-torneio', '#tela-nomes', '#
 function mostrarTela(qual){
   TELAS.forEach(s => $(s).classList.add('oculto'));
   $(qual).classList.remove('oculto');
-  // a cápsula de voltar só faz sentido na tela de escolha de modo
-  $('#btn-hub').classList.toggle('oculto', qual !== '#tela-inicio');
+  // na escolha de modo o destino é o hub; dentro do jogo, a tela anterior
+  const noInicio = qual === '#tela-inicio';
+  $('#btn-hub').classList.toggle('oculto', !noInicio);
+  $('#btn-voltar-tela').classList.toggle('oculto', noInicio);
 }
 
 /* ---------- sequência diária ---------- */
@@ -1863,7 +1870,7 @@ function renderSequencia(){
         ? (dia.reg.venceu ? 'Desafio de hoje vencido' : 'Hoje não deu &middot; volte amanhã')
         : 'Desafio de hoje em aberto') + '</span>' +
     '<span class="semana">' + semana.map((d) =>
-      '<span class="dia-sel ' + d.estado + (d.hoje ? ' hoje' : '') + '" title="' + d.iso + '">' +
+      '<span class="dia-sel ' + d.estado + (d.hoje ? ' hoje' : '') + '">' +
       d.letra + '</span>').join('') + '</span>';
 }
 
@@ -3104,6 +3111,7 @@ $('#btn-apoio-topo').href = LINK_APOIO;
 $("#btn-hub").onclick = () => {
   window.location.href = LINK_HUB;
 };
+$('#btn-voltar-tela').onclick = voltarAoMenu;
 $('#btn-ajuda').onclick = () => abrirAjuda(modo);
 $('#btn-lado').onclick = () => {
   const c = $('#col-lado');
