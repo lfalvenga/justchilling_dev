@@ -1,24 +1,39 @@
+// Protege /crm/painel e as rotas de dados do CRM, exigindo cookie de sessão válido
 export const config = {
-  matcher: ['/crm', '/analytics/crm.html', '/api/metrics', '/api/source', '/api/export'],
+  matcher: [
+    '/crm/painel',
+    '/analytics/crm.html',
+    '/api/metrics',
+    '/api/source',
+    '/api/export',
+  ],
 };
 
-export default function middleware(req) {
-  const authHeader = req.headers.get('authorization');
-  const expectedPassword = process.env.CRM_BASIC_PASSWORD; // senha só do Basic Auth, separada da CRM_TOKEN
+function getCookie(req, name) {
+  const raw = req.headers.get('cookie') || '';
+  const match = raw.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
-  if (authHeader) {
-    const [scheme, encoded] = authHeader.split(' ');
-    if (scheme === 'Basic' && encoded) {
-      const decoded = atob(encoded); // formato "usuario:senha"
-      const [, password] = decoded.split(':');
-      if (password === expectedPassword) {
-        return; // senha certa, deixa passar
-      }
-    }
+export default function middleware(req) {
+  const expected = process.env.CRM_BASIC_PASSWORD;
+  const cookieValue = getCookie(req, 'crm_auth');
+
+  if (cookieValue && expected && cookieValue === expected) {
+    return; // autenticado, deixa passar
   }
 
-  return new Response('Autenticação necessária', {
-    status: 401,
-    headers: { 'WWW-Authenticate': 'Basic realm="CRM justchilling"' },
-  });
+  const url = new URL(req.url);
+
+  // chamadas de API não devem ser redirecionadas (o fetch não segue redirect de forma útil aqui)
+  if (url.pathname.startsWith('/api/')) {
+    return new Response(JSON.stringify({ ok: false, error: 'unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // páginas: manda pro login
+  url.pathname = '/crm/login';
+  return Response.redirect(url, 302);
 }

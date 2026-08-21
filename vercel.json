@@ -2,14 +2,20 @@
   "rewrites": [
     { "source": "/roadtostatuette", "destination": "/games/roadtostatuette/index.html" },
     { "source": "/wikioculta", "destination": "/games/wikioculta/index.html" },
-    { "source": "/crm", "destination": "/analytics/crm.html" }
+    { "source": "/crm/login", "destination": "/analytics/login.html" },
+    { "source": "/crm/painel", "destination": "/analytics/crm.html" }
+  ],
+  "redirects": [
+    { "source": "/crm", "destination": "/crm/login", "permanent": false }
   ],
   "headers": [
     {
       "source": "/analytics/crm.html",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store, must-revalidate" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+    },
+    {
+      "source": "/analytics/login.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
     }
   ]
 }
