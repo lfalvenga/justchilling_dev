@@ -81,12 +81,18 @@ button {
   transform: translateY(-50%);
   width: 28px;
   height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 16px;
+  color: #8a8a9a;
   padding: 0;
-  line-height: 1;
+}
+
+.eye:hover {
+  color: #f0f0f5;
 }
 
 #erro {
