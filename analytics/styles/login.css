@@ -1,0 +1,73 @@
+
+Login · CSS
+:root{--bg:#0b0b10;--card:#15151d;--border:#26263a;--text:#f0f0f5;--muted:#8a8a9a;--accent:#d4af37;}
+*{box-sizing:border-box;}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:32px;width:100%;max-width:340px;}
+h1{font-size:18px;margin:0 0 20px;font-weight:600;}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+  background:#0f0f16;color:var(--text);font-size:14px;margin-bottom:16px;}
+input:focus{outline:none;border-color:var(--accent);}
+button{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);
+  color:#111;font-weight:600;font-size:14px;cursor:pointer;}
+button:disabled{opacity:.6;cursor:default;}
+#erro{color:#ff6b6b;font-size:13px;margin-top:12px;display:none;}
+ 
+/* campo de senha com botão de mostrar/esconder */
+.password{
+  position:relative;
+  margin-bottom:16px;
+}
+ 
+.password input{
+  margin-bottom:0;
+  padding-right:44px;
+}
+ 
+.eye{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:30px;
+  height:30px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:16px;
+  color:var(--muted);
+  padding:0;
+}
+ 
+.eye:hover{
+  color:var(--text);
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
