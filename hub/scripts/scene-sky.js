@@ -1,3 +1,10 @@
+/**
+ * Céu da cena: gera as estrelas espalhadas aleatoriamente
+ * e controla o ciclo dia/noite (troca automática a cada 1 min,
+ * ou manual ao clicar no botão de sol/lua). Também troca o favicon
+ * da aba conforme o período.
+ */
+
 (function () {
   var scene = document.getElementById('scene');
 

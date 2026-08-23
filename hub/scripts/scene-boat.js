@@ -1,3 +1,9 @@
+/**
+ * Barquinho da cena: navega entre 3 pontos fixos da tela ao ser
+ * clicado, com leve inclinação durante o movimento e rastro de
+ * espuma (wake) atrás dele enquanto navega.
+ */
+
 (function () {
   var scene = document.getElementById('scene');
   var wrapB = document.getElementById('boatWrap'),

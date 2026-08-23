@@ -1,3 +1,10 @@
+/**
+ * Coqueiros da cena: ao clicar no coqueiro ou no tronco,
+ * balança a árvore e derruba um coco, que cai e rola até a areia
+ * com uma nuvem de poeira no impacto. Posições ajustam entre
+ * modo retrato e paisagem.
+ */
+
 (function () {
   var scene = document.getElementById('scene');
   var COCO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAA20lEQVR4nO2ZsQoCMRBEE7EUsbBIYXlY+v/fYSlXWqSwELHXD3CKMXvsMTCvDGzyWBg2JLUEOLfDZ7T21p91tHYzWrgmls5CUnqLFtmATW0fOZs6AwVWstOWzkJSGgYRgUJ3Ou6o2vvjTe039xe1n2SnLZ2FpHRF048N3WVqP2vXuVMHo3AiUDglO23pLCSl6YmIYEO3NJKdtnQWktJ0ENEEi1xNI0h22tJZSErDl0v2uro06Brqx5o1sXQW9EREIYmEk32YQUh22tJZSEoP/+WV4n/Ev7B0FpLSX3ArM1H6Ynh7AAAAAElFTkSuQmCC";

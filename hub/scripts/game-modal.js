@@ -1,3 +1,10 @@
+/**
+ * Modal de seleção de jogo do hub.
+ * Abre/fecha o overlay ao clicar em "Jogar", e redireciona pro jogo
+ * escolhido usando o atributo data-play de cada card.
+ * Fecha também com clique fora do modal ou tecla Esc.
+ */
+
 (function () {
   var overlay = document.getElementById('overlay');
   document.getElementById('playBtn').addEventListener('click', function () {

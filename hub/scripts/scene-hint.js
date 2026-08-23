@@ -1,3 +1,12 @@
+/**
+ * Texto de dica no rodapé da cena ("clique no mar, nos coqueiros...").
+ * Ajusta a mensagem conforme os coqueiros estão visíveis ou não
+ * na tela (em telas muito estreitas/altas eles saem do enquadramento).
+ * Não é um HTML pois sua função é fazer com que o texto seja dinâmico
+ * em telas mais estreitas.
+ */
+
+
 (function () {
   /* the scene always fills the screen edge-to-edge now (no letterbox bars), which on
      very tall/narrow phones crops the palm trees out of view entirely — so on those
