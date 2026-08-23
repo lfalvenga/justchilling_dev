@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/hub/index.html" },
     { "source": "/roadtostatuette", "destination": "/games/roadtostatuette/index.html" },
     { "source": "/wikioculta", "destination": "/games/wikioculta/index.html" },
     { "source": "/crm/login", "destination": "/analytics/login.html" },
@@ -15,6 +16,14 @@
     },
     {
       "source": "/analytics/login.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+    },
+    {
+      "source": "/analytics/styles/login.css",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+    },
+    {
+      "source": "/analytics/scripts/toggle-eye.js",
       "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
     }
   ]
