@@ -22,8 +22,8 @@
 
   var nb = document.getElementById('nightBtn');
   var dayNightTimer = null;
-  var FAV_DAY = "/hub/assets/favicon_day.png",
-    FAV_NIGHT = "/hub/assets/favicon_night.png";
+  var FAV_DAY = "/hub/assets/favicons/favicon_day.png",
+    FAV_NIGHT = "/hub/assets/favicons/favicon_night.png";
   var faviconEl = document.getElementById('favicon');
   function setNight(on) {
     scene.classList.toggle('night', on);
