@@ -1,3 +1,9 @@
+/**
+ * Mar da cena: cria a animação de ondas e faz o peixinho pular
+ * quando o usuário clica na água. A distância/tamanho do pulo
+ * varia conforme a profundidade (quão perto da praia foi o clique).
+ */
+
 (function () {
   var overlay = document.getElementById('overlay');
   document.getElementById('playBtn').addEventListener('click', function () {
