@@ -7,8 +7,7 @@
 
 (function () {
   var scene = document.getElementById('scene');
-  var COCO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAYAAAA6GuKaAAAA20lEQVR4nO2ZsQoCMRBEE7EUsbBIYXlY+v/fYSlXWqSwELHXD3CKMXvsMTCvDGzyWBg2JLUEOLfDZ7T21p91tHYzWrgmls5CUnqLFtmATW0fOZs6AwVWstOWzkJSGgYRgUJ3Ou6o2vvjTe039xe1n2SnLZ2FpHRF048N3WVqP2vXuVMHo3AiUDglO23pLCSl6YmIYEO3NJKdtnQWktJ0ENEEi1xNI0h22tJZSErDl0v2uro06Brqx5o1sXQW9EREIYmEk32YQUh22tJZSEoP/+WV4n/Ev7B0FpLSX3ArM1H6Ynh7AAAAAElFTkSuQmCC";
-
+  var COCO = "/hub/assets/coco.png";
   var TREES = {
     L: { x: 19.6, y: 31.0, ground: 93.5, roll: 3.2, palm: 'palmL' },
     R: { x: 80.6, y: 27.5, ground: 92.0, roll: -3.0, palm: 'palmR' }
