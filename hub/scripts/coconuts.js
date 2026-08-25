@@ -7,7 +7,7 @@
 
 (function () {
   var scene = document.getElementById('scene');
-  var COCO = "/hub/assets/coco.png";
+  var COCO = "/hub/assets/cocos/coco.png";
   var TREES = {
     L: { x: 19.6, y: 31.0, ground: 93.5, roll: 3.2, palm: 'palmL' },
     R: { x: 80.6, y: 27.5, ground: 92.0, roll: -3.0, palm: 'palmR' }

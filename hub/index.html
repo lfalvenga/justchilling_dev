@@ -1,101 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Just Chilling</title>
-<link id="favicon" rel="icon" type="image/png" href="/hub/assets/favicon-day.png"><link rel="stylesheet" href="/hub/styles/hub.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Just Chilling</title>
+
+  <link id="favicon" rel="icon" type="image/png" href="/hub/assets//favicons/favicon_day.png">
+  <link rel="stylesheet" href="/hub/styles/hub.css">
 </head>
 <body>
 
-<div id="viewport"><div id="scene">
-  <img id="bg" class="layer px" src="/hub/assets/background_day.png">
-  <img id="night" class="layer px" src="/hub/assets/background_night.png">
-  <!-- dedicated portrait composition: sun/moon bigger and centered, palms pulled inward,
-       so a tall phone screen never crops the trees out — swapped in by the
-       @media(orientation:portrait) rule below, alongside the palm layers further down -->
-  <img id="bgM" class="layer px" src="/hub/assets/background_day_mobile.png">
-  <img id="nightM" class="layer px" src="/hub/assets/background_night_mobile.png">
-  <div id="stars"></div>
-  <img class="wl wl1 px" src="/hub/assets/sea_pixel_1.png">
-  <img class="wl wl2 px" src="/hub/assets/sea_pixel_2.png">
-  <img class="wl wl3 px" src="/hub/assets/sea_pixel_3.png">
+<div id="viewport">
+  <div id="scene">
 
+    <!-- ================= BACKGROUND ================= -->
 
-  <div class="bird" id="b1">
-    <img class="px" src="/hub/assets/bird1_1.png"><img class="px" src="/hub/assets/bird1_2.png"><img class="px" src="/hub/assets/bird1_3.png">
+    <img id="bg" class="layer px" src="/hub/assets//backgrounds/background_day.png">
+    <img id="night" class="layer px" src="/hub/assets/backgrounds/background_night.png">
+
+    <img id="bgM" class="layer px" src="/hub/assets/backgrounds/background_day_mobile.png">
+    <img id="nightM" class="layer px" src="/hub/assets/backgrounds/background_night_mobile.png">
+
+    <div id="stars"></div>
+
+    <!-- ================= OCEAN ================= -->
+
+    <img class="wl wl1 px" src="/hub/assets/backgrounds/sea_pixel_1.png">
+    <img class="wl wl2 px" src="/hub/assets/backgrounds/sea_pixel_2.png">
+    <img class="wl wl3 px" src="/hub/assets/backgrounds/sea_pixel_3.png">
+
+    <!-- ================= BIRDS ================= -->
+
+    <div class="bird bird-1">
+      <img class="px" src="/hub/assets/birds/bird1_1.png">
+      <img class="px" src="/hub/assets/birds/bird1_2.png">
+      <img class="px" src="/hub/assets/birds/bird1_3.png">
+    </div>
+
+    <div class="bird bird-2">
+      <img class="px" src="/hub/assets/birds/bird2_1.png">
+      <img class="px" src="/hub/assets/birds/bird2_2.png">
+      <img class="px" src="/hub/assets/birds/bird2_3.png">
+    </div>
+
+    <div class="bird bird-3">
+      <img class="px" src="/hub/assets/birds/bird3_1.png">
+      <img class="px" src="/hub/assets/birds/bird3_2.png">
+      <img class="px" src="/hub/assets/birds/bird3_3.png">
+    </div>
+
+    <!-- ================= VEGETATION ================= -->
+
+    <img id="palmL" class="layer px" src="/hub/assets/palms/palmL.png">
+    <img id="palmR" class="layer px" src="/hub/assets/palms/palmR.png">
+
+    <img id="palmLM" class="layer px" src="/hub/assets/palms/palmL_mobile.png">
+    <img id="palmRM" class="layer px" src="/hub/assets/palms/palmR_mobile.png">
+
+    <!-- ================= BOAT ================= -->
+
+    <div id="boatWrap">
+      <div id="boatTilt">
+        <img id="boatImg" class="px" src="/hub/assets/boats/boat.png">
+      </div>
+    </div>
+
+    <!-- ================= HITBOXES ================= -->
+
+    <div id="hitboxes" aria-hidden="true">
+      <div id="hitSea" class="hit" title="toca no mar"></div>
+
+      <div id="hitTreeL" class="hit" title="sacode o coqueiro"></div>
+      <div id="hitTreeR" class="hit" title="sacode o coqueiro"></div>
+
+      <div id="hitTrunkL" class="hit" title="sacode o coqueiro"></div>
+      <div id="hitTrunkR" class="hit" title="sacode o coqueiro"></div>
+    </div>
+
+    <!-- ================= UI ================= -->
+
+    <div id="title">
+      <span class="hm">
+        <span class="ghost g-out">JUST CHILLING</span>
+        <span class="ghost g-cy">JUST CHILLING</span>
+        <span class="ghost g-mg">JUST CHILLING</span>
+        <span class="fill">JUST CHILLING</span>
+      </span>
+      <div class="sub">APRECIE A VIDA</div>
+    </div>
+
+    <a id="pixBtn"
+       href="https://pixgg.com/ian.brito"
+       target="_blank"
+       rel="noopener"
+       title="Apoie o projeto via Pix">
+
+      <span class="pixHeart">♥</span>
+      <span class="pixLabel">Apoie o projeto</span>
+    </a>
+
+    <div id="pixHint">Apoie-nos</div>
+
+    <button id="nightBtn" title="Dia / Noite">🌙</button>
+
+    <div id="hint">clique no mar, nos coqueiros ou no barco</div>
+
+    <button id="playBtn">Jogar</button>
+
   </div>
-  <div class="bird" id="b2">
-    <img class="px" src="/hub/assets/bird2_1.png"><img class="px" src="/hub/assets/bird2_2.png"><img class="px" src="/hub/assets/bird2_3.png">
-  </div>
-  <div class="bird" id="b3">
-    <img class="px" src="/hub/assets/bird3_1.png"><img class="px" src="/hub/assets/bird1_3.png"><img class="px" src="/hub/assets/bird3_3.png">
-  </div>
+</div>
 
-  <img id="palmL" class="layer px" src="/hub/assets/palmL.png">
-  <img id="palmR" class="layer px" src="/hub/assets/palmR.png">
-  <img id="palmLM" class="layer px" src="/hub/assets/palmL_mobile.png">
-  <img id="palmRM" class="layer px" src="/hub/assets/palmR_mobile.png">
-
-  <div id="boatWrap"><div id="boatTilt">
-    <img id="boatImg" class="px" src="/hub/assets/boat.png">
-  </div></div>
-
-  <div id="hitSea" class="hit" title="toca no mar"></div>
-  <div id="hitTreeL" class="hit" title="sacode o coqueiro"></div>
-  <div id="hitTreeR" class="hit" title="sacode o coqueiro"></div>
-  <div id="hitTrunkL" class="hit" title="sacode o coqueiro"></div>
-  <div id="hitTrunkR" class="hit" title="sacode o coqueiro"></div>
-
-
-
-  <div id="title">
-    <span class="hm">
-      <span class="ghost g-out">JUST CHILLING</span>
-      <span class="ghost g-cy">JUST CHILLING</span>
-      <span class="ghost g-mg">JUST CHILLING</span>
-      <span class="fill">JUST CHILLING</span>
-    </span>
-    <div class="sub">APRECIE A VIDA</div>
-  </div>
-
-  <a id="pixBtn" href="https://pixgg.com/ian.brito" target="_blank" rel="noopener" title="Apoie o projeto via Pix">
-    <span class="pixHeart">&#9829;</span>
-    <span class="pixLabel">Apoie o projeto</span>
-  </a>
-  <div id="pixHint">Apoie-nos</div>
-  <button id="nightBtn" title="dia / noite">&#127769;</button>
-  <div id="hint">clique no mar, nos coqueiros ou no barco</div>
-  <button id="playBtn">Jogar</button>
-</div></div>
+<!-- ================= MODAL ================= -->
 
 <div id="overlay">
   <div id="modal">
-    <button class="close" data-close>&#10005;</button>
+
+    <button class="close" data-close>✕</button>
+
     <h2>Escolha um jogo</h2>
 
     <div class="card">
-      <img class="logo" src="/hub/assets/card_road_to_statuette.png">
-      <p>Monte seu elenco dos sonhos, tente sobreviver ao tapete vermelho e trazer a Estatueta para casa!</p>
-      <button class="go" data-play="/roadtostatuette">Jogar agora</button>
+      <img class="logo" src="/hub/assets/game_cards/card_road_to_statuette.png">
+
+      <p>
+        Monte seu elenco dos sonhos, tente sobreviver ao tapete vermelho
+        e trazer a Estatueta para casa!
+      </p>
+
+      <button class="go" data-play="/roadtostatuette">
+        Jogar agora
+      </button>
     </div>
 
     <div class="soon">
-      <div class="em">&#127754;</div>
-      <div style="flex:1;min-width:0">
+      <div class="em">🌊</div>
+
+      <div class="soon-content">
         <h3>Em breve</h3>
         <p>Novo jogo chegando no hub. Fica ligado.</p>
       </div>
     </div>
+
   </div>
 </div>
 
+<!-- ================= SCRIPTS ================= -->
 
-<script src="/hub/scripts/scene-sky.js"></script>
-<script src="/hub/scripts/scene-water.js"></script>
-<script src="/hub/scripts/scene-coconuts.js"></script>
-<script src="/hub/scripts/scene-boat.js"></script>
-<script src="/hub/scripts/game-modal.js"></script>
-<script src="/hub/scripts/scene-hint.js"></script>
+<script src="/hub/scripts/sky.js"></script>
+<script src="/hub/scripts/water.js"></script>
+<script src="/hub/scripts/coconuts.js"></script>
+<script src="/hub/scripts/boat.js"></script>
+<script src="/hub/scripts/modal.js"></script>
+<script src="/hub/scripts/hint.js"></script>
+
 </body>
 </html>
