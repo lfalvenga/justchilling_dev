@@ -8,6 +8,7 @@
 import { DADOS } from './dados-filmes.js';
 import { $, sortear } from './dom-helpers.js';
 import { gerarImagemElenco } from './canvas-utils.js';
+import { faixa, cartaDe, htmlCarta } from './cartas.js';
 
 const CATS = DADOS.cats;
 const FILMES = DADOS.filmes;
@@ -21,34 +22,6 @@ const LINK_HUB = "/";
 const GIROS_EXTRAS = 3;   // rodadas de "não gostei" para o draft inteiro
 const PAUSA_DUELO = 900;  // ms entre a revelação de um embate e o próximo
 
-
-function faixa(ov){
-  if (ov >= 90) return 'lendario';
-  if (ov >= 75) return 'ouro';
-  if (ov >= 60) return 'prata';
-  return 'bronze';
-}
-function cartaDe(filme, catId){
-  return filme.c.find(c => c.k === catId);
-}
-
-function htmlCarta(filme, carta, opcoes = {}){
-  const selos = [];
-  if (carta.v) selos.push('<span class="selo vitoria">&#127942; Venceu</span>');
-  else if (carta.i) selos.push('<span class="selo">Indicado</span>');
-  // deixa explícito que este selo é do filme, não da pessoa
-  if (filme.w > 0) selos.push('<span class="selo filme-selo">Filme &middot; ' + filme.w + (filme.w > 1 ? ' estatuetas' : ' estatueta') + '</span>');
-  const titulo = filme.t !== filme.o ? filme.t + ' <span style="opacity:.6">(' + filme.o + ')</span>' : filme.t;
-  return '<div class="carta ' + faixa(carta.ov) + (opcoes.clicavel ? ' clicavel' : '') +
-    (opcoes.usada ? ' usada' : '') + '"' + (opcoes.attr || '') + '>' +
-      '<div class="topo"><span class="ov">' + carta.ov + '</span>' +
-      '<span class="cat">' + (carta.l || ROTULOS[carta.k]) + '</span></div>' +
-      '<div class="nome">' + carta.p + '</div>' +
-      '<div class="selos">' + selos.join('') + '</div>' +
-      '<div class="filme">' + titulo + ' &middot; ' + filme.a + '</div>' +
-    '</div>' +
-    (opcoes.usada ? '' : '');
-}
 
 /* ---------- modos ---------- */
 const MODOS = {
