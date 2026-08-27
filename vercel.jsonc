@@ -1,0 +1,105 @@
+{
+  // REWRITES
+  // Mantêm a URL bonita no navegador enquanto servem arquivos internos.
+  // Ex.: /roadtostatuette -> /games/roadtostatuette/index.html
+  //
+  // REDIRECTS
+  // Mudam a URL do usuário. Aqui usamos apenas para mandar /crm para /crm/login.
+  //
+  // HEADERS
+  // Adicionam cabeçalhos HTTP automaticamente em cada resposta.
+  // - X-Frame-Options: impede que o site seja aberto em iframes (clickjacking)
+  // - X-Content-Type-Options: impede o navegador de "adivinhar" tipos de arquivos
+  // - Referrer-Policy: não envia caminhos/UTMs para sites externos
+  // - Cache-Control: impede cache das páginas sensíveis do CRM
+
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/hub/index.html"
+    },
+    {
+      "source": "/roadtostatuette",
+      "destination": "/games/roadtostatuette/index.html"
+    },
+    {
+      "source": "/wikioculta",
+      "destination": "/games/wikioculta/index.html"
+    },
+    {
+      "source": "/crm/login",
+      "destination": "/analytics/login.html"
+    },
+    {
+      "source": "/crm/painel",
+      "destination": "/analytics/crm.html"
+    }
+  ],
+
+  "redirects": [
+    {
+      "source": "/crm",
+      "destination": "/crm/login",
+      "permanent": false
+    }
+  ],
+
+  "headers": [
+    // Headers globais de segurança (todas as páginas do site)
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+
+    // CRM: nunca armazenar em cache
+    {
+      "source": "/analytics/crm.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/analytics/login.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/analytics/styles/login.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/analytics/scripts/toggle-eye.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
+}
