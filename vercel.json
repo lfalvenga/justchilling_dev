@@ -1,18 +1,7 @@
 {
-  // REWRITES
-  // Mantêm a URL bonita no navegador enquanto servem arquivos internos.
-  // Ex.: /roadtostatuette -> /games/roadtostatuette/index.html
-  //
-  // REDIRECTS
-  // Mudam a URL do usuário. Aqui usamos apenas para mandar /crm para /crm/login.
-  //
-  // HEADERS
-  // Adicionam cabeçalhos HTTP automaticamente em cada resposta.
-  // - X-Frame-Options: impede que o site seja aberto em iframes (clickjacking)
-  // - X-Content-Type-Options: impede o navegador de "adivinhar" tipos de arquivos
-  // - Referrer-Policy: não envia caminhos/UTMs para sites externos
-  // - Cache-Control: impede cache das páginas sensíveis do CRM
+  "_comment": "Just Chilling · Configuração da Vercel",
 
+  "_comment_rewrites": "Mantêm URLs amigáveis enquanto servem arquivos internos (ex.: /roadtostatuette → /games/roadtostatuette/index.html).",
   "rewrites": [
     {
       "source": "/",
@@ -36,6 +25,7 @@
     }
   ],
 
+  "_comment_redirects": "Redirecionamentos mudam a URL do usuário. Aqui /crm sempre leva para a tela de login.",
   "redirects": [
     {
       "source": "/crm",
@@ -44,9 +34,10 @@
     }
   ],
 
+  "_comment_headers": "Headers HTTP adicionados automaticamente. Os três primeiros são globais de segurança; os demais impedem cache do CRM.",
   "headers": [
-    // Headers globais de segurança (todas as páginas do site)
     {
+      "_comment": "Segurança global: bloqueia iframe, impede MIME sniffing e protege o referrer.",
       "source": "/(.*)",
       "headers": [
         {
@@ -63,9 +54,8 @@
         }
       ]
     },
-
-    // CRM: nunca armazenar em cache
     {
+      "_comment": "CRM: nunca armazenar em cache.",
       "source": "/analytics/crm.html",
       "headers": [
         {
