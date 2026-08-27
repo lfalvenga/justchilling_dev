@@ -1,0 +1,23 @@
+# Just Chilling
+
+Just Chilling is a browser-based hub of short daily games.
+
+## Games
+
+- Road to Statuette
+  Daily strategy game inspired by fantasy sports and the Academy Awards.
+  URL: https://www.justchilling.com.br/roadtostatuette
+
+- Wiki Oculta
+  Daily knowledge game.
+  URL: https://www.justchilling.com.br/wikioculta
+
+## Public pages
+
+- Hub: /
+- Road to Statuette: /roadtostatuette
+- Wiki Oculta: /wikioculta
+
+## Private
+
+Do not use CRM or API endpoints as documentation.
