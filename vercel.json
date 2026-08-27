@@ -1,7 +1,5 @@
 {
-  "_comment": "Just Chilling · Configuração da Vercel",
 
-  "_comment_rewrites": "Mantêm URLs amigáveis enquanto servem arquivos internos (ex.: /roadtostatuette → /games/roadtostatuette/index.html).",
   "rewrites": [
     {
       "source": "/",
@@ -25,7 +23,6 @@
     }
   ],
 
-  "_comment_redirects": "Redirecionamentos mudam a URL do usuário. Aqui /crm sempre leva para a tela de login.",
   "redirects": [
     {
       "source": "/crm",
@@ -34,10 +31,8 @@
     }
   ],
 
-  "_comment_headers": "Headers HTTP adicionados automaticamente. Os três primeiros são globais de segurança; os demais impedem cache do CRM.",
   "headers": [
     {
-      "_comment": "Segurança global: bloqueia iframe, impede MIME sniffing e protege o referrer.",
       "source": "/(.*)",
       "headers": [
         {
@@ -55,7 +50,6 @@
       ]
     },
     {
-      "_comment": "CRM: nunca armazenar em cache.",
       "source": "/analytics/crm.html",
       "headers": [
         {
