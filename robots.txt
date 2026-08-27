@@ -1,0 +1,17 @@
+# ============================================================================
+# Just Chilling · Robots
+# Arquivo lido por mecanismos de busca (Google, Bing, etc.)
+#
+# Allow     -> páginas públicas podem ser indexadas
+# Disallow  -> evita rastreamento do CRM e da API
+# Sitemap   -> localização do mapa oficial do site
+# ============================================================================
+
+User-agent: *
+
+Allow: /
+
+Disallow: /crm
+Disallow: /api
+
+Sitemap: https://www.justchilling.com.br/sitemap.xml
