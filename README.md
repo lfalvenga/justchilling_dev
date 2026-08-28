@@ -76,8 +76,8 @@ Each game is self-contained, including its own assets, stylesheets and scripts, 
 
 | Technology         | Purpose                       |
 | ------------------ | ----------------------------- |
-| HTML5              |      Application structure    |
-| CSS3               |      Styling and animations   |
+| HTML               |      Application structure    |
+| CSS                |      Styling and animations   |
 | Vanilla JavaScript |      Game logic               |
 | Vercel Functions   |      Backend APIs             |
 | SQLite             |      Local analytics database |
