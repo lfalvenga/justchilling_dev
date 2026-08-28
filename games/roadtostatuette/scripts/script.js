@@ -31,28 +31,28 @@ const PAUSA_DUELO = 900;  // ms entre a revelação de um embate e o próximo
 /* ---------- modos ---------- */
 
 /* ---------- estado ---------- */
-let modo = 'corrida';
-let time = {};        // catId -> { filme, carta }
-let giroAtual = null;
-let girosExtras = 3;  // estoque de trocas do draft inteiro
-let revelando = false;
+export let modo = 'corrida';
+export let time = {};        // catId -> { filme, carta }
+export let giroAtual = null;
+export let girosExtras = 3;  // estoque de trocas do draft inteiro
+export let revelando = false;
 // Cada revelação de duelo recebe um número. Trocar de modo ou reiniciar avança o
 // contador, e os temporizadores da revelação antiga desistem em vez de mexer
 // num time que já foi zerado.
-let geracaoDuelo = 0;
-let adversarios = [];
-let rodada = 0;
-let vitorias = 0;
-let historico = [];
-let catsVencidas = 0, catsPerdidas = 0;
-let desafioHoje = null;   // { ancora, cartas } do desafio do dia
-let oficialHoje = false;  // a partida em curso conta para o placar diário
-let nomeFilmeJogador = ''; // nome que o jogador dá ao próprio filme, na claquete
-let jogadores = [];       // Noite de Gala: [{ nome, time, girosExtras, estatuetas }]
-let vez = 0;              // índice do jogador da vez
-let qtdJogadores = 3;
+export let geracaoDuelo = 0;
+export let adversarios = [];
+export let rodada = 0;
+export let vitorias = 0;
+export let historico = [];
+export let catsVencidas = 0, catsPerdidas = 0;
+export let desafioHoje = null;   // { ancora, cartas } do desafio do dia
+export let oficialHoje = false;  // a partida em curso conta para o placar diário
+export let nomeFilmeJogador = ''; // nome que o jogador dá ao próprio filme, na claquete
+export let jogadores = [];       // Noite de Gala: [{ nome, time, girosExtras, estatuetas }]
+export let vez = 0;              // índice do jogador da vez
+export let qtdJogadores = 3;
 
-const M = () => MODOS[modo];
+export const M = () => MODOS[modo];
 
 function iniciarModo(id){
   modo = id;
@@ -335,7 +335,7 @@ function nomeDoTime(t){
 }
 
 /* ---------- compartilhar score ---------- */
-let textoScoreAtual = '';
+export let textoScoreAtual = '';
 
 function mediaElencoScore(t){
   const vals = CATS.map(c => t && t[c.id] && t[c.id].carta ? t[c.id].carta.ov : null).filter(v => v !== null);
