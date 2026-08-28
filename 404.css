@@ -1,0 +1,51 @@
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(#7fe7ff 0%, #ffd89a 55%, #38a9c9 56%, #2a90b2 100%);
+  overflow:hidden;
+}
+
+.error-container{
+  text-align:center;
+  padding:32px;
+}
+
+.error-code{
+  font-family:"Anton", sans-serif;
+  font-size:clamp(96px,18vw,180px);
+  color:#fff6df;
+  margin:0;
+  line-height:.9;
+  text-shadow:6px 6px 0 #1b0d1d;
+}
+
+.error-title{
+  font-family:"Anton", sans-serif;
+  letter-spacing:4px;
+  color:#00e5ff;
+  font-size:28px;
+  margin:12px 0 4px;
+}
+
+.error-text{
+  max-width:420px;
+  color:#2a2320;
+  margin:auto;
+  line-height:1.6;
+}
+
+.error-button{
+  display:inline-block;
+  margin-top:28px;
+  padding:14px 28px;
+  text-decoration:none;
+  background:#ff2d78;
+  color:white;
+  border-radius:6px;
+  font-family:"Anton", sans-serif;
+  letter-spacing:2px;
+  box-shadow:0 5px 0 #7b1344;
+}
