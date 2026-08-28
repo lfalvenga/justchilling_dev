@@ -5,14 +5,19 @@
  * outros pedaços (dados dos filmes, helpers de DOM, geração de imagem para
  * compartilhar) já foram extraídos para seus próprios arquivos.
  */
-import { DADOS } from './dados-filmes.js';
+import { CATS, FILMES, ROTULOS } from './dados-filmes.js';
 import { $, sortear } from './dom-helpers.js';
 import { gerarImagemElenco } from './canvas-utils.js';
 import { faixa, cartaDe, htmlCarta } from './cartas.js';
+import {
+  lerDados, gravarDados, desafioDoDia, timeComposto, filmeDaCarta,
+  estadoDiario, registrarDiario, semanaDiaria, registrarPresenca
+} from './dados-persistencia.js';
+import {
+  comCortina, mostrarTela, abrirAjuda, fecharAjuda, jaViuAjuda, marcarAjudaVista
+} from './navegacao-telas.js';
+import { MODOS, renderMenu } from './menu.js';
 
-const CATS = DADOS.cats;
-const FILMES = DADOS.filmes;
-const ROTULOS = Object.fromEntries(CATS.map(c => [c.id, c.label]));
 const RODADAS = 8;
 // destino do botão de apoio no rodapé — troque pelo seu link do pix.gg
 const LINK_APOIO = 'https://pixgg.com/ian.brito';
@@ -24,335 +29,31 @@ const PAUSA_DUELO = 900;  // ms entre a revelação de um embate e o próximo
 
 
 /* ---------- modos ---------- */
-const MODOS = {
-  corrida: {
-    nome: 'Temporada de Prêmios',
-    cor: '#d4af37', corClara: '#f0d878',
-    curto: 'O caminho longo: 8 rodadas de mata-mata, uma derrota elimina.',
-    detalhes: [
-      'Elenco de 6 contra 8 filmes sorteados, um por rodada',
-      'Cada categoria vale um ponto: maior Overall vence',
-      'Uma derrota elimina; empate decide na média',
-    ],
-    regras: '8 rodadas · 3 trocas · sozinho',
-    trocas: 3, rodadas: 8, rival: 'sorteado',
-  },
-  academia: {
-    nome: 'Sorteio do Dia',
-    cor: '#4fa8c9', corClara: '#8fd3ea',
-    curto: 'Um desafio por dia, ancorado num vencedor de Melhor Filme. Uma tentativa oficial, depois treino livre.',
-    detalhes: [
-      'Todo dia um vencedor de Melhor Filme dá o tema da rodada',
-      'O adversário sai entre os indicados daquele ano',
-      'Uma tentativa oficial por dia; depois, treino livre',
-    ],
-    regras: '1 partida por dia · 3 trocas · sequência salva',
-    trocas: 3, rodadas: 1, rival: 'ano',
-  },
-  gala: {
-    nome: 'Noite de Gala',
-    cor: '#a06be0', corClara: '#c9a4f5',
-    curto: 'De 2 a 6 pessoas no mesmo aparelho, escalando em rodízio. No fim, a cerimônia entrega as estatuetas.',
-    detalhes: [
-      'De 2 a 6 jogadores, cada um nomeia o seu filme',
-      'Rodízio: gira, escala uma carta e passa adiante',
-      'Uma estatueta por categoria; quem tiver mais leva Melhor Filme',
-    ],
-    regras: '2 a 6 jogadores · 3 trocas cada · cerimônia no fim',
-    multi: true,
-    trocas: 3, rodadas: 0, rival: 'gala',
-  },
-  maratona: {
-    nome: 'Maratona',
-    cor: '#e0703c', corClara: '#f5a077',
-    curto: 'Um time só contra adversários sem fim. O placar é a sequência.',
-    detalhes: [
-      'Um elenco contra adversários sorteados, sem fim',
-      'Cada vitória aumenta a sequência; a primeira derrota encerra',
-      'O recorde fica salvo neste aparelho',
-    ],
-    regras: 'sem limite de rodadas · 3 trocas · recorde salvo',
-    trocas: 3, rodadas: Infinity, rival: 'sorteado',
-  },
-};
 
 /* ---------- estado ---------- */
-let modo = 'corrida';
-let time = {};        // catId -> { filme, carta }
-let giroAtual = null;
-let girosExtras = 3;  // estoque de trocas do draft inteiro
-let revelando = false;
+export let modo = 'corrida';
+export let time = {};        // catId -> { filme, carta }
+export let giroAtual = null;
+export let girosExtras = 3;  // estoque de trocas do draft inteiro
+export let revelando = false;
 // Cada revelação de duelo recebe um número. Trocar de modo ou reiniciar avança o
 // contador, e os temporizadores da revelação antiga desistem em vez de mexer
 // num time que já foi zerado.
-let geracaoDuelo = 0;
-let adversarios = [];
-let rodada = 0;
-let vitorias = 0;
-let historico = [];
-let catsVencidas = 0, catsPerdidas = 0;
-let desafioHoje = null;   // { ancora, cartas } do desafio do dia
-let oficialHoje = false;  // a partida em curso conta para o placar diário
-let nomeFilmeJogador = ''; // nome que o jogador dá ao próprio filme, na claquete
-let jogadores = [];       // Noite de Gala: [{ nome, time, girosExtras, estatuetas }]
-let vez = 0;              // índice do jogador da vez
-let qtdJogadores = 3;
+export let geracaoDuelo = 0;
+export let adversarios = [];
+export let rodada = 0;
+export let vitorias = 0;
+export let historico = [];
+export let catsVencidas = 0, catsPerdidas = 0;
+export let desafioHoje = null;   // { ancora, cartas } do desafio do dia
+export let oficialHoje = false;  // a partida em curso conta para o placar diário
+export let nomeFilmeJogador = ''; // nome que o jogador dá ao próprio filme, na claquete
+export let jogadores = [];       // Noite de Gala: [{ nome, time, girosExtras, estatuetas }]
+export let vez = 0;              // índice do jogador da vez
+export let qtdJogadores = 3;
 
-const M = () => MODOS[modo];
+export const M = () => MODOS[modo];
 
-/* ---------- memória entre sessões ---------- */
-const DEPOSITO = 'academy_draft_v1';
-function lerDados(){
-  try { return JSON.parse(localStorage.getItem(DEPOSITO)) || {}; } catch (e) { return {}; }
-}
-function gravarDados(d){
-  try { localStorage.setItem(DEPOSITO, JSON.stringify(d)); } catch (e) {}
-}
-
-/* ---------- sorteio estável do dia ---------- */
-const diaISO = (d) => d.getFullYear() + '-' +
-  String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-
-function semente(txt){
-  let h = 2166136261;
-  for (let i = 0; i < txt.length; i++){ h ^= txt.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-function rngCom(s){
-  let a = s;
-  return () => {
-    a = a + 0x6D2B79F5 | 0;
-    let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-
-const VENCEDORES_BP = FILMES.filter(f => f.bp === 2);
-
-// O adversário do dia sai sorteado entre os indicados daquele ano, categoria por
-// categoria. Por isso às vezes vem um time fraco e às vezes um monstro.
-function desafioDoDia(dia){
-  const r = rngCom(semente('academy-draft|' + dia));
-  const ancora = VENCEDORES_BP[Math.floor(r() * VENCEDORES_BP.length)];
-  const doAno = FILMES.filter(f => f.a === ancora.a);
-  const escolhas = CATS.map(cat => {
-    const f = doAno[Math.floor(r() * doAno.length)];
-    return { filme: f, carta: cartaDe(f, cat.id) };
-  });
-  return { ancora, escolhas };
-}
-
-function timeComposto(nome, ano, escolhas){
-  return {
-    t: nome, o: nome, a: ano, r: 0, n: 0, w: 0,
-    composto: escolhas,
-    c: escolhas.map(e => e.carta),
-  };
-}
-function filmeDaCarta(t, catId){
-  if (t.composto){
-    const e = t.composto.find(x => x.carta.k === catId);
-    return e ? e.filme.t : t.t;
-  }
-  return t.t;
-}
-
-function estadoDiario(){
-  const d = lerDados();
-  const dia = diaISO(new Date());
-  return {
-    dia,
-    jogado: !!(d.diario && d.diario.dia === dia),
-    reg: (d.diario && d.diario.dia === dia) ? d.diario : null,
-    streak: d.streak || 0,
-    melhor: d.melhorStreak || 0,
-  };
-}
-function registrarDiario(venceu, placar){
-  const d = lerDados();
-  const dia = diaISO(new Date());
-  if (d.diario && d.diario.dia === dia) return;   // treino nunca conta
-  d.diario = { dia, venceu, placar };
-  if (venceu){
-    const ontem = diaISO(new Date(Date.now() - 86400000));
-    d.streak = (d.ultimoDia === ontem ? (d.streak || 0) : 0) + 1;
-    d.melhorStreak = Math.max(d.melhorStreak || 0, d.streak);
-  } else {
-    d.streak = 0;
-  }
-  d.ultimoDia = dia;
-  // histórico curto, para desenhar a semana; guarda 90 dias e descarta o resto
-  d.dias = d.dias || {};
-  d.dias[dia] = venceu ? 1 : 0;
-  const limite = diaISO(new Date(Date.now() - 90 * 86400000));
-  for (const k of Object.keys(d.dias)) if (k < limite) delete d.dias[k];
-  gravarDados(d);
-}
-
-// os últimos 7 dias, do mais antigo para hoje
-// semana fixa de domingo a sábado, não os últimos 7 dias corridos
-function semanaDiaria(){
-  const d = lerDados();
-  const dias = d.dias || {};
-  const presenca = d.presenca || {};
-  const hoje = new Date();
-  const domingo = new Date(hoje);
-  domingo.setDate(hoje.getDate() - hoje.getDay());
-  const isoHoje = diaISO(hoje);
-  return Array.from({ length: 7 }, (_, i) => {
-    const data = new Date(domingo.getTime() + i * 86400000);
-    const iso = diaISO(data);
-    return {
-      iso,
-      letra: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'][i],
-      hoje: iso === isoHoje,
-      // dourado cheio = encarou o desafio do dia (venceu ou não);
-      // dourado vazado = apareceu e jogou algum outro modo
-      estado: dias[iso] === 1 ? 'ganhou'
-            : iso in dias ? 'diario'
-            : presenca[iso] ? 'jogou' : 'vazio',
-    };
-  });
-}
-
-// Marca que a pessoa apareceu e jogou hoje, em qualquer modo. É o que acende o
-// dia na tira da semana, independente de ter vencido o desafio diário.
-function registrarPresenca(){
-  const d = lerDados();
-  const dia = diaISO(new Date());
-  d.presenca = d.presenca || {};
-  if (d.presenca[dia]) return;
-  d.presenca[dia] = 1;
-  const limite = diaISO(new Date(Date.now() - 90 * 86400000));
-  for (const k of Object.keys(d.presenca)) if (k < limite) delete d.presenca[k];
-  gravarDados(d);
-}
-
-/* ---------- troca de tela com cortina ---------- */
-function comCortina(troca){
-  const t = $('#transicao');
-  t.classList.add('rodando');
-  requestAnimationFrame(() => t.classList.add('fechada'));
-  setTimeout(() => { troca(); window.scrollTo({ top: 0 }); }, 640);
-  setTimeout(() => t.classList.remove('fechada'), 880);
-  setTimeout(() => t.classList.remove('rodando'), 1540);
-}
-const TELAS = ['#tela-inicio', '#tela-draft', '#tela-torneio', '#tela-nomes', '#tela-passagem', '#tela-cerimonia'];
-function mostrarTela(qual){
-  TELAS.forEach(s => $(s).classList.add('oculto'));
-  $(qual).classList.remove('oculto');
-  // na escolha de modo o destino é o hub; dentro do jogo, a tela anterior
-  const noInicio = qual === '#tela-inicio';
-  $('#btn-hub').classList.toggle('oculto', !noInicio);
-  $('#btn-voltar-tela').classList.toggle('oculto', noInicio);
-}
-
-/* ---------- sequência diária ---------- */
-function renderSequencia(){
-  const dia = estadoDiario();
-  const semana = semanaDiaria();
-  const jogouHoje = dia.jogado;
-
-  $('#sequencia').innerHTML =
-    '<span class="fogo">' + (dia.streak > 0 ? '&#128293;' : '&#127916;') + '</span>' +
-    '<span class="chama"><span class="n">' + dia.streak + '</span>' +
-      '<span class="rot">' + (dia.streak === 1 ? 'dia seguido' : 'dias seguidos') + '</span></span>' +
-    (dia.melhor > dia.streak ? '<span class="recorde">recorde: ' + dia.melhor + '</span>' : '') +
-    '<span class="aviso">' + (jogouHoje
-        ? (dia.reg.venceu ? 'Desafio de hoje vencido' : 'Hoje não deu &middot; volte amanhã')
-        : 'Desafio de hoje em aberto') + '</span>' +
-    '<span class="semana">' + semana.map((d) =>
-      '<span class="dia-sel ' + d.estado + (d.hoje ? ' hoje' : '') + '">' +
-      d.letra + '</span>').join('') + '</span>';
-}
-
-// Selo que diz de cara se o modo é sozinho ou com gente na sala.
-// O ícone é SVG, e não emoji, porque emoji vem com cor própria e escura:
-// assim ele herda a cor clara do modo e fica legível no fundo preto.
-const ICONE_SOLO =
-  '<svg class="icone" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
-    '<circle cx="12" cy="7.2" r="4.2"/>' +
-    '<path d="M12 13.4c-4.5 0-8.2 2.7-8.2 6V21h16.4v-1.6c0-3.3-3.7-6-8.2-6z"/>' +
-  '</svg>';
-const ICONE_MULTI =
-  '<svg class="icone larga" viewBox="0 0 30 24" fill="currentColor" aria-hidden="true">' +
-    '<circle cx="10" cy="7.2" r="4.2"/>' +
-    '<path d="M10 13.4c-4.5 0-8.2 2.7-8.2 6V21h16.4v-1.6c0-3.3-3.7-6-8.2-6z"/>' +
-    '<circle cx="21.5" cy="8.4" r="3.4" opacity=".72"/>' +
-    '<path d="M21.5 14c-1.4 0-2.7.3-3.8.8 1.5 1.3 2.4 3 2.4 4.8V21h8.2v-1.4c0-3-3-5.6-6.8-5.6z" opacity=".72"/>' +
-  '</svg>';
-
-function seloJogadores(m){
-  return m.multi
-    ? '<span class="selo-jogadores">' + ICONE_MULTI + '2 a 6 jogadores</span>'
-    : '<span class="selo-jogadores">' + ICONE_SOLO + 'Solo</span>';
-}
-
-/* ---------- como jogar ---------- */
-function abrirAjuda(id){
-  const m = MODOS[id];
-  const caixa = $('#modal-ajuda .caixa-ajuda');
-  caixa.style.setProperty('--cor', m.cor);
-  caixa.style.setProperty('--cor-clara', m.corClara);
-  $('#ajuda-jogadores').outerHTML = seloJogadores(m).replace('class="selo-jogadores"', 'class="selo-jogadores" id="ajuda-jogadores"');
-  $('#ajuda-titulo').textContent = m.nome;
-  $('#ajuda-chamada').textContent = m.curto;
-  $('#ajuda-detalhes').innerHTML = m.detalhes.map(d => '<li>' + d + '</li>').join('');
-  $('#ajuda-regras').textContent = m.regras;
-  $('#modal-ajuda').classList.remove('oculto');
-}
-function fecharAjuda(){ $('#modal-ajuda').classList.add('oculto'); }
-
-// a explicação aparece sozinha só na primeira vez em cada modo
-function jaViuAjuda(id){
-  const d = lerDados();
-  return !!(d.tutoriais && d.tutoriais[id]);
-}
-function marcarAjudaVista(id){
-  const d = lerDados();
-  d.tutoriais = d.tutoriais || {};
-  d.tutoriais[id] = 1;
-  gravarDados(d);
-}
-
-/* ---------- menu ---------- */
-function renderMenu(){
-  renderSequencia();
-  const dia = estadoDiario();
-  const dados = lerDados();
-  const recorde = dados.recordeMaratona || 0;
-  const desafio = desafioDoDia(dia.dia);
-
-  const extras = {
-    academia: (dia.jogado
-        ? '<span class="tag ' + (dia.reg.venceu ? 'feito' : 'perdido') + '">' +
-          (dia.reg.venceu ? 'vencido hoje &middot; ' + dia.reg.placar : 'perdido hoje &middot; ' + dia.reg.placar) +
-          '</span>'
-        : '<span class="tag">tentativa de hoje em aberto</span>') +
-      '<span class="placar-modo">Hoje é a temporada de <strong>' + desafio.ancora.t + '</strong> (' + desafio.ancora.a + ')' +
-      (dia.streak ? ' &middot; sequência de ' + dia.streak : '') + '</span>',
-    maratona: recorde ? '<span class="placar-modo">Seu recorde: ' + recorde +
-      (recorde > 1 ? ' vitórias seguidas' : ' vitória') + '</span>' : '',
-    corrida: '', gala: '',
-  };
-
-  $('#modos').innerHTML = Object.keys(MODOS).map(id => {
-    const m = MODOS[id];
-    return '<button class="modo" data-modo="' + id + '" style="--cor:' + m.cor + ';--cor-clara:' + m.corClara + '">' +
-      seloJogadores(m) +
-      '<h3>' + m.nome + '</h3>' +
-      '<p class="chamada">' + m.curto + '</p>' +
-      (extras[id] || '') +
-    '</button>';
-  }).join('');
-
-  $('#modos').querySelectorAll('.modo').forEach(el => {
-    el.onclick = () => comCortina(() => iniciarModo(el.dataset.modo));
-  });
-}
-
-/* ---------- início de partida ---------- */
 function iniciarModo(id){
   modo = id;
   time = {}; giroAtual = null; historico = []; nomeFilmeJogador = '';
@@ -365,7 +66,7 @@ function iniciarModo(id){
 
   // na primeira vez em cada modo, a explicação abre sozinha
   if (!jaViuAjuda(id)){
-    abrirAjuda(id);
+    abrirAjuda(MODOS[id]);
     marcarAjudaVista(id);
   }
 
@@ -634,7 +335,7 @@ function nomeDoTime(t){
 }
 
 /* ---------- compartilhar score ---------- */
-let textoScoreAtual = '';
+export let textoScoreAtual = '';
 
 function mediaElencoScore(t){
   const vals = CATS.map(c => t && t[c.id] && t[c.id].carta ? t[c.id].carta.ov : null).filter(v => v !== null);
@@ -1190,7 +891,7 @@ function voltarAoMenu(){
   comCortina(() => {
     fecharPalco();
     document.body.classList.remove('jogando');
-    renderMenu();
+    renderMenu((id) => comCortina(() => iniciarModo(id)));
     mostrarTela('#tela-inicio');
   });
 }
@@ -1206,7 +907,7 @@ $("#btn-hub").onclick = () => {
   window.location.href = LINK_HUB;
 };
 $('#btn-voltar-tela').onclick = voltarAoMenu;
-$('#btn-ajuda').onclick = () => abrirAjuda(modo);
+$('#btn-ajuda').onclick = () => abrirAjuda(MODOS[modo]);
 $('#btn-lado').onclick = () => {
   const c = $('#col-lado');
   const abriu = c.classList.toggle('aberta');
@@ -1232,7 +933,7 @@ document.addEventListener('keydown', (e) => {
   if (!$('#modal-ajuda').classList.contains('oculto')) fecharAjuda();
   if (!$('#modal-share').classList.contains('oculto')) fecharCompartilhamento();
 });
-renderMenu();
+renderMenu((id) => comCortina(() => iniciarModo(id)));
 $('#btn-girar').onclick = girar;
 $('#btn-proxima').onclick = proximaRodada;
 $('#btn-reiniciar').onclick = reiniciar;
