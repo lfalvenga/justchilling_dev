@@ -13,7 +13,7 @@ import { CATS } from './dados-filmes.js';
 import { faixa } from './cartas.js';
 import { lerDados } from './dados-persistencia.js';
 import {
-  time, modo, jogadores, historico, rodada, vitorias,
+  time, modo, jogadores, historico, rodada, vitorias, nomeFilmeJogador,
   M, mediaDe, fmtMedia, definirNomeFilme
 } from './script.js';
 
@@ -130,7 +130,7 @@ export async function copiarScore(){
     if (navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(texto); ok = true; }
   } catch (e){}
   if (!ok){
-    const area = document.createElement('textsarea');
+    const area = document.createElement('textarea');
     area.value = texto; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.opacity = '0';
     document.body.appendChild(area); area.select();
     try { ok = document.execCommand('copy'); } catch (e){}
